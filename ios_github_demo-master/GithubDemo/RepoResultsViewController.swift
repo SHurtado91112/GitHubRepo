@@ -10,10 +10,10 @@ import UIKit
 import MBProgressHUD
 
 // Main ViewController
-class RepoResultsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class RepoResultsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, SettingsPresentingViewControllerDelegate {
     
     @IBOutlet weak var tableView: UITableView!
-
+    
     var searchBar: UISearchBar!
     var searchSettings = GithubRepoSearchSettings()
 
@@ -21,7 +21,7 @@ class RepoResultsViewController: UIViewController, UITableViewDelegate, UITableV
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         self.tableView.rowHeight = UITableViewAutomaticDimension
         self.tableView.estimatedRowHeight = 120
         
@@ -101,6 +101,32 @@ class RepoResultsViewController: UIViewController, UITableViewDelegate, UITableV
         
         self.tableView.reloadData()
     }
+    
+    func didSaveSettings(settings: GithubRepoSearchSettings)
+    {
+        searchSettings = settings
+    }
+    
+    func didCancelSettings()
+    {
+    }
+    
+    // RepoResultsViewController.swift
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?)
+    {
+        let navController = segue.destination as! UINavigationController
+        
+        if(segue.identifier == "settingSegue")
+        {
+            let vc = navController.topViewController as! SearchSettingsViewController
+            vc.settings = self.searchSettings
+            
+            print("SELF STARS: \(self.searchSettings.minStars)")
+            
+            vc.delegate = self
+        }
+    }
+    
 }
 
 // SearchBar methods
@@ -118,7 +144,10 @@ extension RepoResultsViewController: UISearchBarDelegate {
 
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         searchBar.text = ""
+        searchSettings.searchString = searchBar.text
         searchBar.resignFirstResponder()
+        doSearch()
+        self.tableView.reloadData()
     }
 
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {

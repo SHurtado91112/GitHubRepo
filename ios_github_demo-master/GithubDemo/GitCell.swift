@@ -22,10 +22,16 @@ class GitCell: UITableViewCell {
     
     @IBOutlet weak var userImgView: UIImageView!
     
+    @IBOutlet weak var starImgView: UIImageView!
+    @IBOutlet weak var forkImgView: UIImageView!
     
     override func awakeFromNib()
     {
         super.awakeFromNib()
+        
+        forkImgView.image = UIImage(named: "fork")?.withRenderingMode(.alwaysTemplate)
+        
+        starImgView.image = UIImage(named: "star")?.withRenderingMode(.alwaysTemplate)
         
         nameLabel.preferredMaxLayoutWidth = nameLabel.frame.size.width
         gitUserLabel.preferredMaxLayoutWidth = gitUserLabel.frame.size.width
